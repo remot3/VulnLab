@@ -39,7 +39,7 @@ if( isset($_COOKIE['d2VsY29tZS1hZG1pbmlzdHJhdG9y']) ){
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/lab/insecure-deserialization/admin-account-2/css/bootstrap.min.css">
 <!------ Include the above in your HEAD tag ---------->
 
 <!DOCTYPE html><html lang='en' class=''>
@@ -49,7 +49,7 @@ h1{
     text-align: center;
  }
 </style>
-<link rel='stylesheet prefetch' href='css/normalize.min.css'><script src='js/prefixfree.min.js'></script>
+<link rel='stylesheet prefetch' href='/lab/insecure-deserialization/admin-account-2/css/normalize.min.css'><script src='/lab/insecure-deserialization/admin-account-2/js/prefixfree.min.js'></script>
 </head><body>
 
 <?php echo '<h2 style="text-align: center; color:red; margin-top: 100px;">'.$text.'</h2>'; ?>

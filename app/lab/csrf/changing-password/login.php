@@ -44,10 +44,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $strings['title']; ?></title>
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/chat.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/typing.css">
+    <link rel="stylesheet" href="/lab/csrf/changing-password/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lab/csrf/changing-password/assets/css/chat.css">
+    <link rel="stylesheet" href="/lab/csrf/changing-password/assets/css/style.css">
+    <link rel="stylesheet" href="/lab/csrf/changing-password/assets/css/typing.css">
 </head>
 
 <body>

@@ -30,7 +30,7 @@ function canDo($action,$strings){
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/lab/insecure-deserialization/full-privileges/css/bootstrap.min.css">
 <!------ Include the above in your HEAD tag ---------->
 
 <!DOCTYPE html><html lang='en' class=''>
@@ -40,7 +40,7 @@ h1{
     text-align: center;
  }
 </style>
-<link rel='stylesheet prefetch' href='css/normalize.min.css'><script src='js/prefixfree.min.js'></script>
+<link rel='stylesheet prefetch' href='/lab/insecure-deserialization/full-privileges/css/normalize.min.css'><script src='/lab/insecure-deserialization/full-privileges/js/prefixfree.min.js'></script>
 </head><body>
 <div style = "text-align:middle">
 <?php

@@ -29,8 +29,8 @@ if (isset($_POST['link'])){
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-        <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="flaticon.css">
+        <link rel="stylesheet" type="text/css" href="/lab/xss/news/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/lab/xss/news/flaticon.css">
         <style>
           a:hover{
             color:yellow

@@ -54,7 +54,7 @@ if ($result = $query->fetch(PDO::FETCH_ASSOC)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $strings["title"]; ?></title>
-    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="/lab/idor/about/bootstrap.min.css">
 </head>
 
 <body>
@@ -81,7 +81,7 @@ if ($result = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         <div class="card border-primary mb-3 text-center">
                             <div class="card-header text-primary" style="color: #000 !important;">
-                                <img src="./info/pp/<?= $picture_url ?>" alt="" class="rounded-circle" style="max-width: 150px;">
+                                <img src="/lab/idor/about/info/pp/<?= $picture_url ?>" alt="" class="rounded-circle" style="max-width: 150px;">
                                 <br />
                                 <h3><?= $name ?></h3>
                                 <button class="btn btn-primary mt-3" id="about-button">

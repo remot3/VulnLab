@@ -13,7 +13,7 @@ $strings = tr();
 
 	<title><?= $strings['title'] ?></title>
 
-	<link rel="stylesheet" href="./../bootstrap.min.css">
+	<link rel="stylesheet" href="/lab/command-injection/bootstrap.min.css">
 
 </head>
 
@@ -24,15 +24,15 @@ $strings = tr();
 		</div>
 		<div class="row pt-2 mt-5 " style="margin-left: 200px;">
 			<div class="col-md-4">
-				<img src="images/resim.jpg" style="width: 140px"></a>
+				<img src="/lab/command-injection/stock-check/images/resim.jpg" style="width: 140px"></a>
 
 
 			</div>
 			<div class="col-md-4">
-				<img src="images/resim2.jpg" style="width: 140px"></a>
+				<img src="/lab/command-injection/stock-check/images/resim2.jpg" style="width: 140px"></a>
 			</div>
 			<div class="col-md-4">
-				<img src="images/resim3.jpg" style="width: 130px"></a>
+				<img src="/lab/command-injection/stock-check/images/resim3.jpg" style="width: 130px"></a>
 
 			</div>
 		</div>

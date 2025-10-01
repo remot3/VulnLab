@@ -35,7 +35,7 @@
 ?>
 
 
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/lab/insecure-deserialization/full-privileges/css/bootstrap.min.css">
 <!------ Include the above in your HEAD tag ---------->
 
 <!DOCTYPE html><html lang='en' class=''>

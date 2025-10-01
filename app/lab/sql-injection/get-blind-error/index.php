@@ -45,7 +45,7 @@ if (isset($_GET['img'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lab/sql-injection/get-blind-error/bootstrap.min.css">
 
     <title><?php echo $strings['title']; ?></title>
 </head>
