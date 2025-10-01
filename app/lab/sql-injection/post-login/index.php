@@ -38,7 +38,7 @@ print($mysqli->error);
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">   	
+    <link rel="stylesheet" type="text/css" href="/lab/sql-injection/post-login/bootstrap.min.css">   	
 	<title>
 	<?php
         echo isset($page_title) ?$page_title:"Challenge_Basic";     

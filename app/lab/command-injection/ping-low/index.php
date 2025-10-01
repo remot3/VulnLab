@@ -13,7 +13,7 @@ $strings = tr();
 	<meta charset="UTF-8">
 
 	<title>PING</title>
-	<link rel="stylesheet" href="./../bootstrap.min.css">
+	<link rel="stylesheet" href="/lab/command-injection/bootstrap.min.css">
 
 </head>
 

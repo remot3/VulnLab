@@ -12,7 +12,7 @@ $strings = tr();
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lab/xss/basic-dom-based/bootstrap.min.css">
 
     <title><?php echo $strings['title']; ?></title>
 </head>

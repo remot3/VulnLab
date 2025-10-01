@@ -11,7 +11,7 @@ $strings = tr();
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?= $strings['title1']; ?></title>
-	<link rel="stylesheet" href="./../bootstrap.min.css">
+	<link rel="stylesheet" href="/lab/command-injection/bootstrap.min.css">
 </head>
 
 <body>

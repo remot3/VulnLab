@@ -39,7 +39,7 @@ if (isset($_POST['uname']) && isset($_POST['passwd'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lab/xss/user-agent/bootstrap.min.css">
 
     <title>Hello, world!</title>
 </head>

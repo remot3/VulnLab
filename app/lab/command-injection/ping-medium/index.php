@@ -12,7 +12,7 @@ $strings = tr();
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title><?= $strings['title'] ?></title>
-	<link rel="stylesheet" href="./../bootstrap.min.css">
+	<link rel="stylesheet" href="/lab/command-injection/bootstrap.min.css">
 </head>
 
 <body>

@@ -14,7 +14,7 @@ require("brute.php");
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lab/broken-authentication/brute-force/css/bootstrap.min.css">
 
     <title><?= $strings["title"]; ?></title>
 </head>

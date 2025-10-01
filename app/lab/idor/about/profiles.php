@@ -7,7 +7,7 @@
 
                 <div class="card border-primary mb-3 text-center">
                     <div class="card-header text-primary" style="color: #000 !important;">
-                        <img src="./info/pp/<?= $picture_url ?>" alt="" class="rounded-circle" style="max-width: 150px;">
+                        <img src="/lab/idor/about/info/pp/<?= $picture_url ?>" alt="" class="rounded-circle" style="max-width: 150px;">
                         <div class="container-wrapperr" style="max-width: 300px; margin-left: auto; margin-right: auto;">
                             <form action="./saveprofile.php" method="post">
                                 <input type="hidden" class="form-control" value="<?= $userid ?>" style="color: #808080;" name="puserid"/>

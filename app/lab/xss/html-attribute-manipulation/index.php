@@ -17,7 +17,7 @@ function encodeB($char){
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lab/xss/html-attribute-manipulation/bootstrap.min.css">
 
     <title><?php echo $strings['title']; ?></title>
 </head>

@@ -40,7 +40,7 @@ h1{
     text-align: center;
  }
 </style>
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/lab/insecure-deserialization/admin-account-1/css/bootstrap.min.css">
  
 </head><body>
 

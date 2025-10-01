@@ -19,7 +19,7 @@ exec ('echo ' . $_SERVER["HTTP_USER_AGENT"] . ' >> /tmp/userAgent.log');
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lab/command-injection/blind-command-injection/bootstrap.min.css">
     <title><?php echo $strings['title']; ?></title>
 </head>
 
