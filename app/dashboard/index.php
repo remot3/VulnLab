@@ -410,47 +410,62 @@ function normalizeDashboardPath(string $path): string
     return $trimmed === '/' ? '/' : $trimmed . '/';
 }
 
-function serveFriendlyLab(array $route): void
+function renderFeatureUnavailable(): void
+{
+    http_response_code(500);
+    echo 'Feature temporarily unavailable';
+    exit;
+}
+
+function renderFeatureNotFound(): void
+{
+    http_response_code(404);
+    echo 'Page not found';
+    exit;
+}
+
+function resolveLabTargetOrFail(array $route): array
 {
     $labUrl = $route['target'] ?? '';
     if (!is_string($labUrl) || $labUrl === '') {
-        http_response_code(500);
-        echo 'Feature temporarily unavailable';
-        exit;
+        renderFeatureUnavailable();
     }
 
     $labPath = parse_url($labUrl, PHP_URL_PATH);
     if (!is_string($labPath) || $labPath === '') {
-        http_response_code(500);
-        echo 'Feature temporarily unavailable';
-        exit;
+        renderFeatureUnavailable();
     }
 
     $baseDir = realpath(__DIR__ . '/..');
     if ($baseDir === false) {
-        http_response_code(500);
-        echo 'Feature temporarily unavailable';
-        exit;
+        renderFeatureUnavailable();
     }
 
     $resolvedTarget = realpath($baseDir . '/' . ltrim($labPath, '/'));
     if ($resolvedTarget === false) {
-        http_response_code(404);
-        echo 'Page not found';
-        exit;
+        renderFeatureNotFound();
     }
 
-    $scriptFile = $resolvedTarget;
     if (is_dir($resolvedTarget)) {
         $scriptFile = $resolvedTarget . DIRECTORY_SEPARATOR . 'index.php';
+        $basePath = $resolvedTarget;
+    } else {
+        $scriptFile = $resolvedTarget;
+        $basePath = dirname($resolvedTarget);
     }
 
     if (!is_file($scriptFile)) {
-        http_response_code(404);
-        echo 'Page not found';
-        exit;
+        renderFeatureNotFound();
     }
 
+    return [
+        'script_file' => $scriptFile,
+        'base_path' => $basePath
+    ];
+}
+
+function runLabScript(string $scriptFile, string $scriptName): void
+{
     $previousCwd = getcwd();
     $previousScriptName = $_SERVER['SCRIPT_NAME'] ?? null;
     $previousPhpSelf = $_SERVER['PHP_SELF'] ?? null;
@@ -461,9 +476,7 @@ function serveFriendlyLab(array $route): void
         chdir($targetDirectory);
     }
 
-
-    $_SERVER['SCRIPT_NAME'] = $route['canonical_path'] ?? ($route['path'] ?? '/dashboard/');
-
+    $_SERVER['SCRIPT_NAME'] = $scriptName;
     $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
     $_SERVER['SCRIPT_FILENAME'] = $scriptFile;
 
@@ -492,6 +505,94 @@ function serveFriendlyLab(array $route): void
     }
 
     exit;
+}
+
+function serveFriendlyLab(array $route): void
+{
+    $target = resolveLabTargetOrFail($route);
+    $scriptFile = $target['script_file'];
+    $scriptName = $route['canonical_path'] ?? ($route['path'] ?? '/dashboard/');
+
+    runLabScript($scriptFile, $scriptName);
+}
+
+function outputLabAsset(string $assetPath): void
+{
+    $mimeType = null;
+    $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+    if ($finfo !== false) {
+        $detected = finfo_file($finfo, $assetPath);
+        if (is_string($detected) && $detected !== '') {
+            $mimeType = $detected;
+        }
+        finfo_close($finfo);
+    }
+
+    if ($mimeType === null) {
+        $mimeType = 'application/octet-stream';
+    }
+
+    header('Content-Type: ' . $mimeType);
+    header('Content-Length: ' . (string) filesize($assetPath));
+
+    readfile($assetPath);
+    exit;
+}
+
+function serveLabRelative(array $route, string $relativePath): void
+{
+    $sanitized = ltrim($relativePath, '/');
+    if (
+        $sanitized === '' ||
+        str_contains($sanitized, '..') ||
+        strpos($sanitized, chr(92)) !== false
+    ) {
+        renderFeatureNotFound();
+    }
+
+    $target = resolveLabTargetOrFail($route);
+    $basePath = rtrim($target['base_path'], DIRECTORY_SEPARATOR);
+    $requested = $basePath . DIRECTORY_SEPARATOR . $sanitized;
+    $requested = rtrim($requested, DIRECTORY_SEPARATOR);
+
+    if (!file_exists($requested)) {
+        renderFeatureNotFound();
+    }
+
+    $canonical = realpath($requested);
+    if ($canonical === false) {
+        renderFeatureNotFound();
+    }
+
+    $baseLength = strlen($basePath);
+    if ($canonical !== $basePath && strncmp($canonical, $basePath . DIRECTORY_SEPARATOR, $baseLength + 1) !== 0) {
+        renderFeatureNotFound();
+    }
+
+    if (is_dir($canonical)) {
+        $indexScript = $canonical . DIRECTORY_SEPARATOR . 'index.php';
+        if (!is_file($indexScript)) {
+            renderFeatureNotFound();
+        }
+
+        $baseScript = trim($route['canonical_path'] ?? $route['path'] ?? '/dashboard/', '/');
+        $suffix = trim($sanitized, '/');
+        $scriptNamePrefix = $baseScript === '' ? '' : $baseScript . '/';
+        $scriptName = '/' . ltrim($scriptNamePrefix . $suffix, '/') . '/';
+
+        runLabScript($indexScript, $scriptName);
+    }
+
+    $extension = strtolower(pathinfo($canonical, PATHINFO_EXTENSION));
+    if ($extension === 'php') {
+        $baseScript = trim($route['canonical_path'] ?? $route['path'] ?? '/dashboard/', '/');
+        $scriptNamePrefix = $baseScript === '' ? '' : $baseScript . '/';
+        $scriptName = '/' . ltrim($scriptNamePrefix . ltrim($sanitized, '/'), '/');
+
+        runLabScript($canonical, $scriptName);
+    }
+
+    outputLabAsset($canonical);
 }
 
 
@@ -542,6 +643,19 @@ $manifestJson = json_encode($manifestPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED
 
 $requestedPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '';
 $normalizedRequest = normalizeDashboardPath($requestedPath);
+
+foreach ($featureMap as $featurePath => $route) {
+    if ($featurePath === '' || $requestedPath === $featurePath) {
+        continue;
+    }
+
+    if (strncmp($requestedPath, $featurePath, strlen($featurePath)) === 0) {
+        $relativeAsset = substr($requestedPath, strlen($featurePath));
+        if ($relativeAsset !== false && $relativeAsset !== '') {
+            serveLabRelative($route, $relativeAsset);
+        }
+    }
+}
 
 if (isset($featureMap[$normalizedRequest])) {
     serveFriendlyLab($featureMap[$normalizedRequest]);
