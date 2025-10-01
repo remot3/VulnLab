@@ -184,6 +184,7 @@ $categorySettings = [
     ],
 ];
 
+
 function normalizeDashboardPath(string $path): string
 {
     $trimmed = rtrim($path, '/');
@@ -282,6 +283,7 @@ $categoryCounters = [];
 $friendlyRouteMap = [];
 $legacyRedirects = [];
 
+
 foreach ($modules as $module) {
     if (!isset($module['labs']) || !is_array($module['labs'])) {
         continue;
@@ -302,6 +304,7 @@ foreach ($modules as $module) {
         $settings = $categorySettings[$categoryKey];
         $categoryCounters[$categoryKey] = ($categoryCounters[$categoryKey] ?? 0) + 1;
         $sequence = $categoryCounters[$categoryKey];
+
         $sectionSlug = strtolower($settings['label'] ?? '');
         $sectionSlug = preg_replace('/[^a-z0-9\-]+/', '-', $sectionSlug);
         $sectionSlug = preg_replace('/\-+/', '-', $sectionSlug);
@@ -320,17 +323,20 @@ foreach ($modules as $module) {
 
         $slugCandidate = $slugBase . '-' . $sequence;
         $friendlyPath = '/dashboard/' . $sectionSlug . '/' . $slugCandidate . '/';
+
         $titleTemplate = $settings['titleTemplates'][($sequence - 1) % count($settings['titleTemplates'])];
         $summaryTemplate = $settings['summaries'][($sequence - 1) % count($settings['summaries'])];
         $title = str_replace('{n}', (string) $sequence, $titleTemplate);
         $summary = str_replace('{n}', (string) $sequence, $summaryTemplate);
 
         $entry = [
+
             'categoryKey' => $categoryKey,
             'categoryLabel' => $settings['label'],
             'tagline' => $settings['tagline'],
             'path' => $friendlyPath,
             'slug' => trim($sectionSlug . '/' . $slugCandidate, '/'),
+
             'title' => $title,
             'summary' => $summary,
             'target' => $labUrl,
@@ -346,12 +352,14 @@ foreach ($modules as $module) {
             'friendly_path' => $friendlyPath,
             'lab_route' => $labUrl,
         ];
+
         $normalizedFriendly = normalizeDashboardPath($friendlyPath);
         $friendlyRouteMap[$normalizedFriendly] = [
             'target' => $labUrl,
             'entry' => $entry,
             'canonical_path' => $normalizedFriendly,
         ];
+
 
         $legacySuffixes = [$sequence];
         if (isset($lab['id']) && (is_int($lab['id']) || ctype_digit((string) $lab['id']))) {
@@ -362,13 +370,16 @@ foreach ($modules as $module) {
         foreach ($legacySuffixes as $legacySuffix) {
             $legacySlug = $slugBase . '-' . $categoryKey . '-' . $legacySuffix;
             $legacyPath = '/dashboard/' . $legacySlug . '/';
+
             $normalizedLegacy = normalizeDashboardPath($legacyPath);
             $legacyRedirects[$normalizedLegacy] = $normalizedFriendly;
         }
+
     }
 }
 
 $requestedPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '';
+
 $normalizedRequest = normalizeDashboardPath($requestedPath);
 
 if ($normalizedRequest !== '/dashboard/' && strpos($normalizedRequest, '/dashboard/') === 0) {
@@ -382,6 +393,7 @@ if ($normalizedRequest !== '/dashboard/' && strpos($normalizedRequest, '/dashboa
             $destination .= (strpos($destination, '?') === false ? '?' : '&') . $query;
         }
         header('Location: ' . $destination, true, 302);
+
         exit;
     }
     http_response_code(404);
