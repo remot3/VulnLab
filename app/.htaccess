@@ -1,4 +1,6 @@
 RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.+[^/])$ $1/ [L,R=301]
 RewriteRule ^(lab)($|/) - [L]
 RewriteRule ^dashboard/?$ dashboard/index.php [L,QSA]
 RewriteRule ^dashboard/(.*)$ dashboard/index.php [L,QSA]
