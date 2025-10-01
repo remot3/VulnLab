@@ -184,10 +184,105 @@ $categorySettings = [
     ],
 ];
 
+
+function normalizeDashboardPath(string $path): string
+{
+    $trimmed = rtrim($path, '/');
+    if ($trimmed === '') {
+        return '/';
+    }
+
+    return $trimmed === '/' ? '/' : $trimmed . '/';
+}
+
+function serveFriendlyLab(array $route): void
+{
+    $labUrl = $route['target'] ?? '';
+    if (!is_string($labUrl) || $labUrl === '') {
+        http_response_code(500);
+        echo 'Feature temporarily unavailable';
+        exit;
+    }
+
+    $labPath = parse_url($labUrl, PHP_URL_PATH);
+    if (!is_string($labPath) || $labPath === '') {
+        http_response_code(500);
+        echo 'Feature temporarily unavailable';
+        exit;
+    }
+
+    $baseDir = realpath(__DIR__ . '/..');
+    if ($baseDir === false) {
+        http_response_code(500);
+        echo 'Feature temporarily unavailable';
+        exit;
+    }
+
+    $resolvedTarget = realpath($baseDir . '/' . ltrim($labPath, '/'));
+    if ($resolvedTarget === false) {
+        http_response_code(404);
+        echo 'Page not found';
+        exit;
+    }
+
+    $scriptFile = $resolvedTarget;
+    if (is_dir($resolvedTarget)) {
+        $scriptFile = $resolvedTarget . DIRECTORY_SEPARATOR . 'index.php';
+    }
+
+    if (!is_file($scriptFile)) {
+        http_response_code(404);
+        echo 'Page not found';
+        exit;
+    }
+
+    $previousCwd = getcwd();
+    $previousScriptName = $_SERVER['SCRIPT_NAME'] ?? null;
+    $previousPhpSelf = $_SERVER['PHP_SELF'] ?? null;
+    $previousScriptFilename = $_SERVER['SCRIPT_FILENAME'] ?? null;
+
+    $targetDirectory = dirname($scriptFile);
+    if (is_string($targetDirectory) && $targetDirectory !== '') {
+        chdir($targetDirectory);
+    }
+
+    $_SERVER['SCRIPT_NAME'] = $route['canonical_path'] ?? ($route['entry']['path'] ?? '/dashboard/');
+    $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
+    $_SERVER['SCRIPT_FILENAME'] = $scriptFile;
+
+    include $scriptFile;
+
+    if (is_string($previousCwd) && $previousCwd !== '') {
+        chdir($previousCwd);
+    }
+
+    if ($previousScriptName !== null) {
+        $_SERVER['SCRIPT_NAME'] = $previousScriptName;
+    } else {
+        unset($_SERVER['SCRIPT_NAME']);
+    }
+
+    if ($previousPhpSelf !== null) {
+        $_SERVER['PHP_SELF'] = $previousPhpSelf;
+    } else {
+        unset($_SERVER['PHP_SELF']);
+    }
+
+    if ($previousScriptFilename !== null) {
+        $_SERVER['SCRIPT_FILENAME'] = $previousScriptFilename;
+    } else {
+        unset($_SERVER['SCRIPT_FILENAME']);
+    }
+
+    exit;
+}
+
 $entries = [];
 $manifestEntries = [];
-$redirectMap = [];
 $categoryCounters = [];
+$friendlyRouteMap = [];
+$legacyRedirects = [];
+
 
 foreach ($modules as $module) {
     if (!isset($module['labs']) || !is_array($module['labs'])) {
@@ -257,8 +352,13 @@ foreach ($modules as $module) {
             'friendly_path' => $friendlyPath,
             'lab_route' => $labUrl,
         ];
-        $redirectMap[$friendlyPath] = $labUrl;
-        $redirectMap[rtrim($friendlyPath, '/')] = $labUrl;
+
+        $normalizedFriendly = normalizeDashboardPath($friendlyPath);
+        $friendlyRouteMap[$normalizedFriendly] = [
+            'target' => $labUrl,
+            'entry' => $entry,
+            'canonical_path' => $normalizedFriendly,
+        ];
 
 
         $legacySuffixes = [$sequence];
@@ -270,22 +370,30 @@ foreach ($modules as $module) {
         foreach ($legacySuffixes as $legacySuffix) {
             $legacySlug = $slugBase . '-' . $categoryKey . '-' . $legacySuffix;
             $legacyPath = '/dashboard/' . $legacySlug . '/';
-            $redirectMap[$legacyPath] = $friendlyPath;
-            $redirectMap[rtrim($legacyPath, '/')] = $friendlyPath;
+
+            $normalizedLegacy = normalizeDashboardPath($legacyPath);
+            $legacyRedirects[$normalizedLegacy] = $normalizedFriendly;
         }
 
     }
 }
 
 $requestedPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '';
-if ($requestedPath !== '/dashboard' && $requestedPath !== '/dashboard/' && strpos($requestedPath, '/dashboard/') === 0) {
-    if (isset($redirectMap[$requestedPath])) {
-        header('Location: ' . $redirectMap[$requestedPath], true, 302);
-        exit;
+
+$normalizedRequest = normalizeDashboardPath($requestedPath);
+
+if ($normalizedRequest !== '/dashboard/' && strpos($normalizedRequest, '/dashboard/') === 0) {
+    if (isset($friendlyRouteMap[$normalizedRequest])) {
+        serveFriendlyLab($friendlyRouteMap[$normalizedRequest]);
     }
-    $trimmed = rtrim($requestedPath, '/');
-    if (isset($redirectMap[$trimmed])) {
-        header('Location: ' . $redirectMap[$trimmed], true, 302);
+    if (isset($legacyRedirects[$normalizedRequest])) {
+        $destination = $legacyRedirects[$normalizedRequest];
+        $query = $_SERVER['QUERY_STRING'] ?? '';
+        if ($query !== '') {
+            $destination .= (strpos($destination, '?') === false ? '?' : '&') . $query;
+        }
+        header('Location: ' . $destination, true, 302);
+
         exit;
     }
     http_response_code(404);
