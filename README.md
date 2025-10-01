@@ -18,6 +18,19 @@
 
 Each friendly dashboard feature URL serves the corresponding scenario below:
 
+
+- /dashboard/newsroom/ · curated landing page for newsroom coverage
+- /dashboard/gallery/ · multimedia showcase and upload tools
+- /dashboard/research/ · analytics and reporting utilities
+- /dashboard/profile/ · member profile, access, and preference management
+- /dashboard/sales/ · revenue operations and payment coordination
+- /dashboard/operations/ · infrastructure monitoring and on-call utilities
+- /dashboard/delivery/ · automation stages for content handoffs
+- /dashboard/integrations/ · partner feed notes and developer tooling
+- /dashboard/archive/ · records library and navigation helpers
+- /dashboard/studio/ · layout previews and template tooling
+
+
 - /dashboard/city-newsroom/city-update-1/ > http://localhost:1337/lab/xss/basic-reflected/
 - /dashboard/city-newsroom/city-update-2/ > http://localhost:1337/lab/xss/basic-stored/
 - /dashboard/city-newsroom/city-update-3/ > http://localhost:1337/lab/xss/basic-dom-based/
