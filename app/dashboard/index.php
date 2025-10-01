@@ -519,21 +519,50 @@ function serveFriendlyLab(array $route): void
 function outputLabAsset(string $assetPath): void
 {
     $mimeType = null;
-    $finfo = @finfo_open(FILEINFO_MIME_TYPE);
-    if ($finfo !== false) {
-        $detected = finfo_file($finfo, $assetPath);
-        if (is_string($detected) && $detected !== '') {
-            $mimeType = $detected;
+
+
+    if (function_exists('finfo_open')) {
+        $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo !== false) {
+            $detected = @finfo_file($finfo, $assetPath);
+            if (is_string($detected) && $detected !== '') {
+                $mimeType = $detected;
+            }
+            finfo_close($finfo);
         }
-        finfo_close($finfo);
     }
 
     if ($mimeType === null) {
-        $mimeType = 'application/octet-stream';
+        $extension = strtolower(pathinfo($assetPath, PATHINFO_EXTENSION));
+        $mimeMap = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'json' => 'application/json',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'svg' => 'image/svg+xml',
+            'webp' => 'image/webp',
+            'ico' => 'image/x-icon',
+            'html' => 'text/html',
+            'htm' => 'text/html',
+        ];
+
+        if (isset($mimeMap[$extension])) {
+            $mimeType = $mimeMap[$extension];
+        } else {
+            $mimeType = 'application/octet-stream';
+        }
     }
 
     header('Content-Type: ' . $mimeType);
-    header('Content-Length: ' . (string) filesize($assetPath));
+
+    $size = @filesize($assetPath);
+    if ($size !== false) {
+        header('Content-Length: ' . (string) $size);
+    }
+
 
     readfile($assetPath);
     exit;
