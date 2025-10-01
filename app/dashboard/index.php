@@ -209,6 +209,7 @@ foreach ($modules as $module) {
         $settings = $categorySettings[$categoryKey];
         $categoryCounters[$categoryKey] = ($categoryCounters[$categoryKey] ?? 0) + 1;
         $sequence = $categoryCounters[$categoryKey];
+
         $sectionSlug = strtolower($settings['label'] ?? '');
         $sectionSlug = preg_replace('/[^a-z0-9\-]+/', '-', $sectionSlug);
         $sectionSlug = preg_replace('/\-+/', '-', $sectionSlug);
@@ -227,17 +228,20 @@ foreach ($modules as $module) {
 
         $slugCandidate = $slugBase . '-' . $sequence;
         $friendlyPath = '/dashboard/' . $sectionSlug . '/' . $slugCandidate . '/';
+
         $titleTemplate = $settings['titleTemplates'][($sequence - 1) % count($settings['titleTemplates'])];
         $summaryTemplate = $settings['summaries'][($sequence - 1) % count($settings['summaries'])];
         $title = str_replace('{n}', (string) $sequence, $titleTemplate);
         $summary = str_replace('{n}', (string) $sequence, $summaryTemplate);
 
         $entry = [
+
             'categoryKey' => $categoryKey,
             'categoryLabel' => $settings['label'],
             'tagline' => $settings['tagline'],
             'path' => $friendlyPath,
             'slug' => trim($sectionSlug . '/' . $slugCandidate, '/'),
+
             'title' => $title,
             'summary' => $summary,
             'target' => $labUrl,
