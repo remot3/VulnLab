@@ -520,6 +520,7 @@ function outputLabAsset(string $assetPath): void
 {
     $mimeType = null;
 
+
     if (function_exists('finfo_open')) {
         $finfo = @finfo_open(FILEINFO_MIME_TYPE);
         if ($finfo !== false) {
@@ -561,6 +562,7 @@ function outputLabAsset(string $assetPath): void
     if ($size !== false) {
         header('Content-Length: ' . (string) $size);
     }
+
 
     readfile($assetPath);
     exit;
