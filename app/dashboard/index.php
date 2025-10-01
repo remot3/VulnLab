@@ -209,25 +209,39 @@ foreach ($modules as $module) {
         $settings = $categorySettings[$categoryKey];
         $categoryCounters[$categoryKey] = ($categoryCounters[$categoryKey] ?? 0) + 1;
         $sequence = $categoryCounters[$categoryKey];
-        $slugCandidate = strtolower($settings['slugPrefix'] . '-' . $categoryKey . '-' . $sequence);
-        $slugCandidate = preg_replace('/[^a-z0-9\-]+/', '-', $slugCandidate);
-        $slugCandidate = preg_replace('/\-+/', '-', $slugCandidate);
-        $slugCandidate = trim($slugCandidate, '-');
-        if ($slugCandidate === '') {
-            $slugCandidate = 'feature-' . $sequence;
+
+        $sectionSlug = strtolower($settings['label'] ?? '');
+        $sectionSlug = preg_replace('/[^a-z0-9\-]+/', '-', $sectionSlug);
+        $sectionSlug = preg_replace('/\-+/', '-', $sectionSlug);
+        $sectionSlug = trim($sectionSlug, '-');
+        if ($sectionSlug === '') {
+            $sectionSlug = 'feature';
         }
-        $friendlyPath = '/dashboard/' . $slugCandidate . '/';
+
+        $slugBase = strtolower($settings['slugPrefix'] ?? '');
+        $slugBase = preg_replace('/[^a-z0-9\-]+/', '-', $slugBase);
+        $slugBase = preg_replace('/\-+/', '-', $slugBase);
+        $slugBase = trim($slugBase, '-');
+        if ($slugBase === '') {
+            $slugBase = 'story';
+        }
+
+        $slugCandidate = $slugBase . '-' . $sequence;
+        $friendlyPath = '/dashboard/' . $sectionSlug . '/' . $slugCandidate . '/';
+
         $titleTemplate = $settings['titleTemplates'][($sequence - 1) % count($settings['titleTemplates'])];
         $summaryTemplate = $settings['summaries'][($sequence - 1) % count($settings['summaries'])];
         $title = str_replace('{n}', (string) $sequence, $titleTemplate);
         $summary = str_replace('{n}', (string) $sequence, $summaryTemplate);
 
         $entry = [
-            'categoryKey' => $segments[1] ?? 'default',
+
+            'categoryKey' => $categoryKey,
             'categoryLabel' => $settings['label'],
             'tagline' => $settings['tagline'],
             'path' => $friendlyPath,
-            'slug' => trim($friendlyPath, '/'),
+            'slug' => trim($sectionSlug . '/' . $slugCandidate, '/'),
+
             'title' => $title,
             'summary' => $summary,
             'target' => $labUrl,
