@@ -259,6 +259,21 @@ foreach ($modules as $module) {
         ];
         $redirectMap[$friendlyPath] = $labUrl;
         $redirectMap[rtrim($friendlyPath, '/')] = $labUrl;
+
+
+        $legacySuffixes = [$sequence];
+        if (isset($lab['id']) && (is_int($lab['id']) || ctype_digit((string) $lab['id']))) {
+            $legacySuffixes[] = (int) $lab['id'];
+        }
+        $legacySuffixes = array_values(array_unique($legacySuffixes));
+
+        foreach ($legacySuffixes as $legacySuffix) {
+            $legacySlug = $slugBase . '-' . $categoryKey . '-' . $legacySuffix;
+            $legacyPath = '/dashboard/' . $legacySlug . '/';
+            $redirectMap[$legacyPath] = $friendlyPath;
+            $redirectMap[rtrim($legacyPath, '/')] = $friendlyPath;
+        }
+
     }
 }
 
