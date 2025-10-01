@@ -1,4 +1,5 @@
 <?php
+
 $siteTitle = 'Daily Dispatch Dashboard';
 
 $sections = [
@@ -398,6 +399,7 @@ $sections = [
 
 $navOrder = ['newsroom', 'gallery', 'research', 'profile', 'sales', 'operations', 'delivery', 'integrations', 'archive', 'studio'];
 
+
 function normalizeDashboardPath(string $path): string
 {
     $trimmed = rtrim($path, '/');
@@ -459,7 +461,9 @@ function serveFriendlyLab(array $route): void
         chdir($targetDirectory);
     }
 
+
     $_SERVER['SCRIPT_NAME'] = $route['canonical_path'] ?? ($route['path'] ?? '/dashboard/');
+
     $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
     $_SERVER['SCRIPT_FILENAME'] = $scriptFile;
 
@@ -489,6 +493,7 @@ function serveFriendlyLab(array $route): void
 
     exit;
 }
+
 
 $featureMap = [];
 $sectionPathMap = [];
@@ -567,26 +572,31 @@ function renderLayout(string $pageTitle, ?string $activeSlug, string $content, a
 {
     header('Content-Type: text/html; charset=utf-8');
     ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES); ?></title>
     <meta name="description" content="Daily Dispatch portal with newsroom highlights, research, operations, and member services.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --surface: #ffffff;
             --surface-alt: #f5f7fa;
+
             --text: #1d2433;
             --muted: #4a5668;
             --border: #d8e0ef;
             --accent: #1f6feb;
             --accent-dark: #184fb7;
             --accent-soft: rgba(31, 111, 235, 0.08);
+
         }
         * {
             box-sizing: border-box;
@@ -594,6 +604,7 @@ function renderLayout(string $pageTitle, ?string $activeSlug, string $content, a
         body {
             margin: 0;
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
             background: var(--surface-alt);
             color: var(--text);
         }
@@ -601,24 +612,28 @@ function renderLayout(string $pageTitle, ?string $activeSlug, string $content, a
             color: inherit;
         }
         header.site-header {
+
             background: var(--surface);
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 10;
         }
+
         .header-inner {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 1.5rem;
             padding: 1.25rem 5vw;
+
         }
         .logo {
             font-weight: 700;
             font-size: 1.25rem;
             letter-spacing: 0.04em;
         }
+
         nav.primary-nav {
             display: flex;
             align-items: center;
@@ -652,10 +667,12 @@ function renderLayout(string $pageTitle, ?string $activeSlug, string $content, a
             border-radius: 1.5rem;
             padding: clamp(1.75rem, 2vw, 3rem);
             border: 1px solid var(--border);
+
             display: grid;
             gap: 1.5rem;
         }
         .hero h1 {
+
             margin: 0;
             font-size: clamp(2rem, 4vw, 2.6rem);
             line-height: 1.1;
@@ -665,12 +682,14 @@ function renderLayout(string $pageTitle, ?string $activeSlug, string $content, a
             color: var(--muted);
             font-size: 1.05rem;
             max-width: 64ch;
+
         }
         .hero-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
         }
+
         .btn-primary,
         .btn-outline {
             display: inline-flex;
@@ -685,14 +704,17 @@ function renderLayout(string $pageTitle, ?string $activeSlug, string $content, a
         .btn-primary {
             background: var(--accent);
             color: #fff;
+
         }
         .btn-primary:hover,
         .btn-primary:focus {
             background: var(--accent-dark);
+
         }
         .btn-outline {
             border: 1px solid var(--accent);
             color: var(--accent);
+
         }
         section.dashboard-section {
             display: grid;
@@ -784,11 +806,13 @@ function renderLayout(string $pageTitle, ?string $activeSlug, string $content, a
             .header-inner {
                 flex-direction: column;
                 align-items: flex-start;
+
             }
         }
     </style>
 </head>
 <body>
+
     <header class="site-header" role="banner">
         <div class="header-inner">
             <div class="logo" aria-label="Daily Dispatch logo">Daily Dispatch</div>
@@ -855,10 +879,12 @@ function renderHomeContent(array $sections, array $navOrder): string
                     <h3><?php echo htmlspecialchars($feature['title'], ENT_QUOTES); ?></h3>
                     <p><?php echo htmlspecialchars($feature['summary'], ENT_QUOTES); ?></p>
                     <a class="card-link" href="<?php echo htmlspecialchars($feature['path'], ENT_QUOTES); ?>" aria-label="Open <?php echo htmlspecialchars($feature['title'], ENT_QUOTES); ?>">Open feature →</a>
+
                 </article>
             <?php endforeach; ?>
         </div>
     </section>
+
 
     <section class="dashboard-section" aria-labelledby="section-directory">
         <header>
